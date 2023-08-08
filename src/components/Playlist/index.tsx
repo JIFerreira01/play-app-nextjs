@@ -16,19 +16,25 @@ export default function PlaylistComponent (props: any) {
     }
 
     useEffect(() => {
-        fetchData()
+        if(playlist.length == 0){
+            fetchData()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[playlist.length == 0]);
 
     function handleTrackSelected(trackSelecionada: object){
-        trackContext.setTrack(trackSelecionada);
+        trackContext.setTrack(
+            {
+                track: trackSelecionada,
+                playlist
+            }
+        );
     }
 
     function ComponentPlaylist(params: any) {
-        console.log('ComponentPlaylist', params)
         return (
             <>
-                <div className={"h-24 w-full bg-white mt-10 px-6 rounded-3xl flex shadow-[0_25px_40px_0_rgba(0,0,0,0.02)] justify-center items-center "+ (trackContext?.track?.id == params.id ? style.track__selected : null)}>
+                <div className={"h-24 w-full bg-white mt-10 px-6 rounded-3xl flex shadow-[0_25px_40px_0_rgba(0,0,0,0.02)] justify-center items-center "+ (trackContext?.track?.track?.id == params.id ? style.track__selected : null)}>
                      <div className="h-4/5 shadow-[0_15px_30px_0_rgba(0,0,0,0.16)] mr-10"> 
                         <Image
                         className="rounded-3xl"
@@ -65,7 +71,7 @@ export default function PlaylistComponent (props: any) {
             <div className={"w-full h-full bg-[#ffffffcc] rounded-b-3xl px-5 overflow-y-scroll " + style.custom_overflow}>
                 {playlist.length > 0 ? (
                     playlist[0].tracks.map((track: any, i: any) => <div key={i}>{ComponentPlaylist(track)}</div>)
-                ) : ('nao')}
+                ) : <div className="w-full h-full flex justify-center items-center" ><h1>Não á faixas para reproduzir</h1></div>}
             </div>
         </div>
     )

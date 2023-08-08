@@ -18,11 +18,12 @@ const authOptions = {
 }
 
 export async function RequestToken(){
-    console.log('request token')
     return await axios.post(authOptions.url,authOptions.body, {
         headers:authOptions.headers
     }).then((response) => {
-        nookies.set(null, ACCESS_TOKEN, `${response.data.token_type} ${response.data.access_token}`)
+        nookies.set(null, ACCESS_TOKEN, `${response.data.token_type} ${response.data.access_token}`,{
+            maxAge: response.data.expires_in / 60,
+        })
 
         return response.data
     })
@@ -30,7 +31,6 @@ export async function RequestToken(){
 }
 
 export async function RequestPlaylist(){
-    console.log('request da okaylist')
     const authorization = nookies.get(null).ACCESS_TOKEN;
     let returnFormatedArrayObject: Object<any> = {name: '', tracks: []};
     try {

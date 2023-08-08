@@ -14,7 +14,6 @@ const PlaylistComponent = dynamic(() => import("../components/Playlist"),{
 
 
 export function Home(props: any) {
-  console.log('dentro de props', props)
   return (
         <section className="grid grid-rows-1 grid-cols-7 gap-x-5 w-8/12 h-96 ">
           <div className="col-span-5">

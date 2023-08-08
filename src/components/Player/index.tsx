@@ -1,19 +1,18 @@
 'use client';
-import { useGlobalContext, usePlayerGlobalContext } from "@/app/context";
-import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { usePlayerGlobalContext } from "@/app/context";
+import { useEffect, useState } from "react";
 
 import Image from 'next/image';
 import style from './style.module.css';
-import { findDOMNode } from "react-dom";
-import { findRenderedDOMComponentWithTag } from "react-dom/test-utils";
 
 
-function ManipulatePlayer(track){
+function ManipulatePlayer(trackParam: any){
     let audioElement: any;
+    const { track, setTrack } = usePlayerGlobalContext();
     const [timeCurrent, setTimeCurrent]:any = useState();
     const [duration, setDuration]: any = useState();
     const [refAudioElement, setRefAudioElement]: any = useState();
-    const [percentConclusion, setPercentConclusion]: any = useState(0);
+    const [playlistLocal, setPlaylistLocal]: any = useState();
 
     const handlePlayPause = async () => {
         if(refAudioElement && refAudioElement.paused){
@@ -36,9 +35,14 @@ function ManipulatePlayer(track){
             setDuration(audioElement.duration);
             setRefAudioElement(data.target);
         })
-    }, [track]);
+    }, [trackParam]);
 
-    const handleBackTrack = () => {}
+    const handleBackTrack = () => {
+        const idTrackSelected = trackParam.track.track.id;
+        const indexOfTrack = track.playlist[0].tracks.findIndex((x: Object<any>) => x.id == idTrackSelected)
+        const positionOfNextTrack = indexOfTrack >= 0 ? track.playlist[0].tracks[indexOfTrack - 1] : null;
+        if(positionOfNextTrack) setTrack({playlist: track.playlist, track: positionOfNextTrack});
+    }
     const handleBackSeek = () => {
         if(Math.floor(refAudioElement.currentTime) > 1 && Math.floor(refAudioElement.currentTime) < 29){
             refAudioElement.currentTime -= 0.5;
@@ -49,7 +53,12 @@ function ManipulatePlayer(track){
             refAudioElement.currentTime += 0.5;
         }
     }
-    const handleNextTrack = () => {}
+    const handleNextTrack = () => {
+        const idTrackSelected = trackParam.track.track.id;
+        const indexOfTrack = track.playlist[0].tracks.findIndex(x => x.id == idTrackSelected)
+        const positionOfNextTrack = (track.playlist[0].tracks.length - 1) == indexOfTrack ? null :  track.playlist[0].tracks[indexOfTrack + 1];
+        if(positionOfNextTrack) setTrack({playlist: track.playlist, track: positionOfNextTrack});
+    }
 
     return (
         <div className="w-full h-28 rounded-b-3xl">
@@ -178,17 +187,19 @@ function ManipulatePlayer(track){
 }
 
 export default function PlayerComponent(){
+    let trackFormatedtrack: any = {};
     const { track } = usePlayerGlobalContext();
+    if(track) trackFormatedtrack  = Object.keys(track).length > 2 ?{track: track} : track; 
 
     return (
         <div className="h-full bg-white rounded-3xl pt-4">
-            {track ? (
+            {Object.keys(trackFormatedtrack).length > 0 ? (
                 <>
                  <div className="w-full flex justify-center h-44">
                     <div className="bg-transparent flex justify-center items-center h-36 shadow-[0_20px_60px_0_rgba(0,0,0,0.15)] rounded-3xl">
                         <Image
                             className="rounded-3xl"
-                            src={track?.album?.images[0].url}
+                            src={trackFormatedtrack?.track?.album?.images[0].url}
                             width={160}
                             height={160}
                             priority={true}
@@ -198,15 +209,15 @@ export default function PlayerComponent(){
                 </div>
                 <div className="text-center">
                     <div>
-                        <p className="text-[#2E3271] text-lg font-normal">{track?.name}</p>
-                        <p className="text-[#7c8db5b8]">{track?.artists[0].name}</p>
+                        <p className="text-[#2E3271] text-lg font-normal">{trackFormatedtrack?.track?.name}</p>
+                        <p className="text-[#7c8db5b8]">{trackFormatedtrack?.track?.artists[0].name}</p>
                     </div>
                 </div>
                 <div>
                     <div className="mt-2 mx-4">
                         
-                        <audio className={style.audio} controls={false} src={track?.preview_url} />
-                        <ManipulatePlayer  track={track} />
+                        <audio className={style.audio} controls={false} src={trackFormatedtrack?.track?.preview_url} />
+                        <ManipulatePlayer  track={trackFormatedtrack} />
                     </div>
                 </div>
             </>
