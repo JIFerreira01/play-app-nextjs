@@ -3,18 +3,22 @@
     height: 10px;
   }
   
-  /* Track */
-  .custom_overflow::-webkit-scrollbar-track {
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-  }
-  
-  /* Handle */
-  .custom_overflow::-webkit-scrollbar-thumb {
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-    background: rgba(124, 141, 181, 0.72); 
-  }
-  .custom_overflow::-webkit-scrollbar-thumb:window-inactive {
-    background: rgba(124, 141, 181, 0.72);
-  }
+/* Track */
+.custom_overflow::-webkit-scrollbar-track {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+/* Handle */
+.custom_overflow::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: rgba(124, 141, 181, 0.72); 
+}
+.custom_overflow::-webkit-scrollbar-thumb:window-inactive {
+  background: rgba(124, 141, 181, 0.72);
+}
+
+.track__selected {
+  border: 1px solid #64748bd9;
+}
